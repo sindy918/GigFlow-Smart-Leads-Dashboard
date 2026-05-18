@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_URL } from '../config';
 
 export interface User {
   _id: string;
@@ -33,8 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(localStorage.getItem('gigflow_token'));
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:5000/api';
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -103,7 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError(`Login failed: Connection error. Please check if the backend API service is running on port 5000.`);
+      setError(`Login failed: Connection error. Please check if the backend API service is running.`);
       setLoading(false);
       return false;
     }
@@ -146,7 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (err) {
       console.error('Registration error:', err);
-      setError(`Registration failed: Connection error. Please check if the backend API service is running on port 5000.`);
+      setError(`Registration failed: Connection error. Please check if the backend API service is running.`);
       setLoading(false);
       return false;
     }
