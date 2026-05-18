@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
 import { X, User, Mail, Link as LinkIcon, AlertCircle } from 'lucide-react';
 
 interface Lead {
@@ -26,8 +27,6 @@ export const LeadModal: React.FC<LeadModalProps> = ({ isOpen, onClose, onSaveSuc
   
   const [submitting, setSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
-
-  const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:5000/api';
 
   useEffect(() => {
     if (lead) {
