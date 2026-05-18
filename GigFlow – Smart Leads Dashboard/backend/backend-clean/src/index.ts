@@ -14,19 +14,29 @@ connectDB();
 const app = express();
 
 // Middlewares
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'http://localhost:5000',
-  'https://gig-flow-smart-leads-dashboard-nine.vercel.app'
-];
-const envOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : [];
-
 app.use(cors({
-  origin: [...allowedOrigins, ...envOrigins],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: function (origin, callback) {
+    // Allow non-browser clients (like Postman or server-to-server)
+    if (!origin) return callback(null, true);
+    
+    // Check against authorized host patterns
+    if (
+      origin.startsWith('http://localhost:') || 
+      origin.startsWith('http://127.0.0.1:') ||
+      origin === 'https://gig-flow-smart-leads-dashboard-nine.vercel.app' ||
+      origin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
+    }
+    
+    // Check optional dynamic allowed origins from environment variable
+    if (process.env.ALLOWED_ORIGINS && process.env.ALLOWED_ORIGINS.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
